@@ -82,6 +82,7 @@ the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authentic
 
 | Variable | Description | Default |
 |-----|---|---|
+| `RSP_CREATE_USER` | Whether to create a user on startup. Turn off with any value other than "true" | true |
 | `RSP_TESTUSER` | Test user to be created in the container, turn off with an empty value | `rstudio` |
 | `RSP_TESTUSER_PASSWD` | Test user password | `rstudio` |
 | `RSP_TESTUSER_UID` | Test user UID | `10000` |

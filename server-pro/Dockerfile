@@ -45,6 +45,7 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install --no-cache-dir \
                 pip==20.0.2 \
                 jupyter==1.0.0 \
+		ipython==7.16.1 \
                 'jupyterlab<3.0.0' \
                 rsp_jupyter \
                 rsconnect_jupyter
@@ -67,6 +68,7 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/v
 # Set default env values
 ENV RSP_LICENSE ""
 ENV RSP_LICENSE_SERVER ""
+ENV RSP_CREATE_USER true
 ENV RSP_TESTUSER rstudio
 ENV RSP_TESTUSER_PASSWD rstudio
 ENV RSP_TESTUSER_UID 10000
@@ -75,7 +77,8 @@ ENV RSP_LAUNCHER_TIMEOUT 10
 
 # Copy config and startup
 COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
+RUN chmod +x /usr/local/bin/startup.sh \
+    && mkdir -p /entrypoint.d/
 COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#

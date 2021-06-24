@@ -30,6 +30,9 @@ file:
     exists: true
     owner: rstudio-server
     group: rstudio-server
+  /entrypoint.d:
+    filetype: directory
+    exists: true
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
