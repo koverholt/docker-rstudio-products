@@ -4,7 +4,9 @@ services:
   sut:
     image: $IMAGE_NAME
     command: /run_tests.sh
+    # command: /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
     entrypoint: []
+    privileged: true
     ports:
       - "8787"
     environment:
@@ -15,7 +17,15 @@ services:
       - PYTHON_VERSION_ALT
       - JUPYTER_PYTHON_VERSION
       - R_VERSION_ALT
-      - RSP_LICENSE=${RSW_LICENSE}
+      - RSP_LICENSE_SERVER=rsp-float-lic:8989
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"
+      # overwrite the config file for floating
+      - "./conf/rserver-float.conf:/etc/rstudio/rserver.conf"
+    networks:
+      - default
+
+networks:
+  default:
+    name: rstudio-docker-products

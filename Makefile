@@ -76,9 +76,13 @@ rsp-hook:
 test-rsp: test-server-pro
 test-server-pro:
 	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut
+test-server-pro-float:
+	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test-float.yml run sut
 test-rsp-i: test-server-pro-i
 test-server-pro-i:
 	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut bash
+test-server-pro-float-i:
+	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test-float.yml run sut bash
 
 
 run-rsp: run-server-pro
@@ -90,7 +94,6 @@ run-server-pro:  ## Run RSP container
 		-v /run \
 		-e RSP_LICENSE=$(RSP_LICENSE) \
 		rstudio/rstudio-server-pro:$(RSP_VERSION) $(CMD)
-
 
 rsc: connect
 connect:  ## Build RSC image
