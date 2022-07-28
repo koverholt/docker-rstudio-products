@@ -115,5 +115,8 @@ ENV RSC_LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 VOLUME ["/data"]
 
-ENTRYPOINT ["tini", "--"]
+COPY /docker-entrypoint.sh .
+COPY /docker-entrypoint.d/* /docker-entrypoint.d/
+ONBUILD COPY /docker-entrypoint.d/* /docker-entrypoint.d/
+ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
 CMD ["/usr/local/bin/startup.sh"]
