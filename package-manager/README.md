@@ -142,6 +142,70 @@ docker exec -it {container-id} /bin/bash
 Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how
 to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/configuration/) your repositories.
 
+#### example of adding a local tarball built in rsw to rspm
+
+For this example, a package, `demo1` was created with version 0.1.0 and a 
+tarball was created using the build pane in rsw. This will write out the
+tarball on the host system at `data/rsw/rstudio/demo1_0.1.0.tar.gz`
+
+Copy the tarball into the `/tmp` dir using `docker cp`:
+
+Find the container id for the running package-manager container via `docker ps`:
+
+```bash
+❯ docker ps
+CONTAINER ID   IMAGE ...
+b8ae944b7f2d   rstudio/rstudio-package-manager:2021.12.0-3 ...
+```
+
+```bash
+# replace b8ae944b7f2d with your container ID
+docker cp data/rsw/rstudio/demo1_0.1.0.tar.gz b8ae944b7f2d:/tmp
+```
+
+now you can create the repo in rspm
+
+```bash
+root@1b6f4f5fc669:/# rspm create source --name=demopkgs
+Source 'demopkgs':
+  Type:  Local
+root@1b6f4f5fc669:/# rspm add --source=demopkgs --path='/tmp/demo1_0.1.0.tar.gz'
+Added package '/tmp/demo1_0.1.0.tar.gz'.
+root@1b6f4f5fc669:/# rspm create repo --name=demopkgs --description="demo package repo"
+Repository: demopkgs - demo package repo - R
+root@1b6f4f5fc669:/# rspm subscribe --repo=demopkgs --source=demopkgs
+Repository: demopkgs
+Sources:
+--demopkgs (Local)
+```
+
+It can then be installed from R on the local machine:
+
+```R
+> install.packages("demo1", repos = "http://rstudio-package-manager:4242/demopkgs/latest")
+Installing package into ‘/home/rstudio/R/x86_64-pc-linux-gnu-library/3.6’
+(as ‘lib’ is unspecified)
+trying URL 'http://rstudio-package-manager:4242/demopkgs/latest/src/contrib/demo1_0.1.0.tar.gz'
+Content type 'application/x-gzip' length 859 bytes
+==================================================
+downloaded 859 bytes
+
+* installing *source* package ‘demo1’ ...
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (demo1)
+
+The downloaded source packages are in
+	‘/tmp/RtmpRVTKFG/downloaded_packages’
+```
+
 # Licensing
 
 The license associated with the RStudio Docker Products repository is located
