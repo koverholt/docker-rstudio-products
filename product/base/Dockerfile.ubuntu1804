@@ -143,5 +143,19 @@ LABEL posit.r.version="${R_VERSION}" \
       posit.python.version_alt="${PYTHON_VERSION_ALT}" \
       posit.tini.version="${TINI_VERSION}" \
       posit.quarto.version="${QUARTO_VERSION}"
+LABEL org.opencontainers.image.source = "https://github.com/rstudio/rstudio-docker-products" \
+	org.opencontainers.image.description='A product base image designed to run Posit Professional Products' \
+	org.opencontainers.image.title='Posit Product Base Image' \
+	org.opencontainers.image.version='v1' \
+	org.opencontainers.image.url='https://www.posit.co/' \
+	posit.os='ubuntu1804' \
+	posit.quarto.versions="[{\"version\": \"${QUARTO_VERSION}\", \"path\": \"/opt/quarto/${QUARTO_VERSION}\", \"label\": \"quarto-${QUARTO_VERSION}\"}]" \
+	posit.quarto.included=true \
+	posit.python.versions="[{\"version\": \"${PYTHON_VERSION}\", \"path\": \"/opt/python/${PYTHON_VERSION}\", \"label\": \"python-${PYTHON_VERISON}\"}, {\"version\": \"${PYTHON_VERSION_ALT}\", \"path\": \"/opt/python/${PYTHON_VERSION_ALT}\", \"label\": \"python-${PYTHON_VERSION_ALT}\"}]" \
+	posit.python.included=true
+	posit.r.versions="[{\"version\": \"${R_VERSION}\", \"path\": \"/opt/R/${R_VERSION}\", \"label\": \"R-${R_VERSION}\"}, {\"version\": \"${R_VERSION_ALT}\", \"path\": \"/opt/R/${R_VERSION_ALT}\", \"label\": \"R-${R_VERSION_ALT}\"}]" \
+	posit.r.included=true \
+	posit.tini.versions="[{\"version\": \"${TINI_VERSION}\", \"path\": \"/tini\", \"label\": \"tini\"}]" \
+	posit.tini.included=true
 
 ENTRYPOINT ["/tini", "--"]
