@@ -37,7 +37,7 @@ build OS=IMAGE_OS *TAGS="":
     raw_tag_array=("{{TAGS}}")
   fi
 
-  if [[ "{{ OS }}" == "centos7" ]]; then
+  if [[ "{{ OS }}" == "centos7" ]] || [[ "{{ OS }}" == "rockylinux9" ]]; then
     _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
   else
     _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"

@@ -35,7 +35,7 @@ build OS=IMAGE_OS *TAGS="":
   fi
 
   tag_array=()
-  for TAG in {{TAGS}}
+  for TAG in $raw_tag_array
   do
     tag_array+=("-t" $TAG)
   done

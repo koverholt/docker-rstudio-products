@@ -1,3 +1,7 @@
+# 2023.11.21
+- Added `Dockerfile.rockylinux9`, a community contribution! 
+  - *NOTE: This image is not officially built or supported by Posit at this time.*
+
 # 2023.03.1
 - Update Python VSCode extension to version 2023.6.1
 

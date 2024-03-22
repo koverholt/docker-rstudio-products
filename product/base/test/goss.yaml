@@ -7,7 +7,7 @@ package:
   cracklib-runtime:
     installed: true
   {{end}}
-  {{if .Env.OS | regexMatch "centos.*"}}
+  {{if .Env.OS | regexMatch "(centos|rockylinux).*"}}
   epel-release:
     installed: true
   gnupg2:

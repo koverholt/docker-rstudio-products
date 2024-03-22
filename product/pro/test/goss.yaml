@@ -9,7 +9,7 @@ package:
   unixodbc-dev:
     installed: true
   {{end}}
-  {{if .Env.OS | regexMatch "centos.*"}}
+  {{if .Env.OS | regexMatch "(centos|rockylinux9).*"}}
   epel-release:
     installed: true
   gnupg2:

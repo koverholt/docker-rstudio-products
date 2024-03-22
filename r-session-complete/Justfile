@@ -29,7 +29,7 @@ build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
   fi
-  if [[ "{{ OS }}" == "centos7" ]]; then
+  if [[ "{{ OS }}" == "centos7" ]] || [[ "{{ OS }}" == "rocklinux9" ]]; then
     _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
   else
     _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"

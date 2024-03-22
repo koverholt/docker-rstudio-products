@@ -1,0 +1,52 @@
+# NOTE: This Dockerfile has been provided by the community and is not officially built or supported by Posit.
+
+ARG R_VERSION=4.2.3
+ARG R_VERSION_ALT=4.1.3
+ARG PYTHON_VERSION=3.9.17
+ARG PYTHON_VERSION_ALT=3.8.17
+ARG SRC_IMAGE_NAME=product-base-pro
+ARG REGISTRY=ghcr.io
+FROM ${REGISTRY}/rstudio/${SRC_IMAGE_NAME}:rockylinux9-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+
+### ARG declarations ###
+ARG R_VERSION=4.2.3
+ARG R_VERSION_ALT=4.1.3
+ARG PYTHON_VERSION=3.9.17
+ARG PYTHON_VERSION_ALT=3.8.17
+ARG JUPYTERLAB_VERSION=3.2.9
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/rhel9/x86_64/rstudio-workbench-rhel-2023.09.1-x86_64.rpm
+
+### Install RSW
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN dnf install -y subversion \
+    && curl -o rstudio-workbench.rpm "${RSW_DOWNLOAD_URL}" \
+    && gpg --keyserver hkps://keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
+    && gpg --export --armor 51C0B5BB19F92D60 > rstudio-signing.key \
+    && rpm --import rstudio-signing.key \
+    && rpm -K rstudio-workbench.rpm \
+    && dnf install -y rstudio-workbench.rpm \
+    && rm rstudio-workbench.rpm \
+    && dnf clean all \
+    && rm -rf /var/lib/rstudio-server/r-versions
+
+### Install jupyter
+RUN /opt/python/"${PYTHON_VERSION}"/bin/pip3 install \
+      jupyter \
+      jupyterlab=="${JUPYTERLAB_VERSION}" \
+      rsconnect_jupyter \
+      rsconnect_python \
+      rsp_jupyter \
+      workbench_jupyterlab \
+    && ln -s /opt/python/"${PYTHON_VERSION}"/bin/jupyter /usr/local/bin/jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+
+ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
+
+COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
+
+EXPOSE 8788/tcp
