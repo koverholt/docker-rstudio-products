@@ -24,7 +24,7 @@ RUN apt-get update \
 # System dependencies needed by popular R packages
 # https://docs.rstudio.com/rsc/post-setup-tool/#install-system-dependencies
 
-# Now, install the system requirements for R packages.
+# Now, install the system requirements for R and Python packages.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
       default-jdk \
@@ -88,7 +88,7 @@ RUN apt-get update  \
 
 # Reference: https://docs.rstudio.com/resources/install-r/
 
-# We are NOT linking one of these R versions into the PATH.
+# The version of R is NOT added to the PATH
 
 ARG R_DISTRIBUTION=ubuntu-1804
 
@@ -105,7 +105,7 @@ RUN curl -fsSL -O https://cdn.rstudio.com/r/${R_DISTRIBUTION}/pkgs/${R_INSTALLER
 
 # Reference: https://docs.rstudio.com/resources/install-python/
 
-# We are NOT linking one of these Python versions into the PATH.
+# This version of python is NOT added to the PATH
 
 ARG MINICONDA_VERSION=4.7.12.1
 ARG PYTHON_VERSION=3.7.6
@@ -122,9 +122,19 @@ RUN curl -fsSL -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-${
     # remove miniconda too, for size
     && rm -rf /opt/miniconda
 
-# install quarto
+# Install Quarto --------------------------------------------------------------#
+
+# Reference: https://docs.posit.co/resources/install-quarto/
+
+# This version of quarto is NOT added to the PATH
+
 ARG QUARTO_VERSION=1.0.37
 COPY maybe_install_quarto.sh /tmp/maybe_install_quarto.sh
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.posit.co/cran/__linux__/bionic/latest")' \
     && /tmp/maybe_install_quarto.sh \
     && rm -f /tmp/maybe_install_quarto.sh
+
+# Add a posit user / group --------------------------------------------------------------#
+
+RUN groupadd -g 999 -r posit && \
+	useradd -r -u 999 -g 999 -M posit 
